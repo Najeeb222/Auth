@@ -1,11 +1,11 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { Button, Checkbox, Divider, FormControlLabel, Stack, Typography } from "@mui/material";
 import { CustomTextField, PasswordField, SocialLogin } from "components";
 import { COLORS, ROUTES } from "constant";
 import { useAuth } from "context";
 import { FormProvider, useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 const LoginForm = () => {
     const { user, setUser } = useAuth();

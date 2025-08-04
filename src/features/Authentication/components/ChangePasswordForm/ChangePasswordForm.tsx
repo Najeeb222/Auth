@@ -2,7 +2,7 @@ import { Button, Checkbox, Divider, FormControlLabel, Stack, Typography } from "
 import { ArrowBack, CustomTextField, PasswordField, SocialLogin } from "components"
 import { COLORS, ROUTES } from "constant"
 import { FormProvider, useForm } from "react-hook-form"
-import { Link } from "react-router"
+
 
 const ChangePasswordForm = () => {
   const method = useForm()

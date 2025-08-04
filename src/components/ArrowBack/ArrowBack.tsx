@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from '@mui/material'
 import { ROUTES } from 'constant'
 
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 
 const ArrowBack = () => {
     const navigate = useNavigate()

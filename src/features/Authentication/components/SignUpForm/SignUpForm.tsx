@@ -3,7 +3,7 @@ import { CustomTextField, PasswordField, SocialLogin } from "components"
 import { COLORS, ROUTES } from "constant"
 import { useAuth } from "context"
 import { FormProvider, useForm } from "react-hook-form"
-import { Link } from "react-router-dom"
+import { Link } from "react-router"
 
 
 const SignUpForm = () => {

@@ -2,7 +2,7 @@ import { Button, Divider, Stack, Typography } from "@mui/material"
 import { ArrowBack, CustomTextField,  SocialLogin } from "components"
 import { COLORS, ROUTES } from "constant"
 import { FormProvider, useForm } from "react-hook-form"
-import { Link } from "react-router-dom"
+import { Link } from "react-router"
 
 const ForgotPasswordForm = () => {
   const method = useForm()

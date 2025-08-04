@@ -1,7 +1,7 @@
 // Routes.tsx
 import { ROUTES } from "constant"
 import { NormaleRoute, SecureRoute } from "hocs"
-import { Route, Routes as ReactRoutes } from "react-router-dom"
+import { Route, Routes as ReactRoutes } from "react-router"
 import { ChangePassword, DashboardScreen, ForgotPassword, Login, SignUp } from "screens"
 
 const Routes = () => {
