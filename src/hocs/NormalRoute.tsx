@@ -1,16 +1,19 @@
-import { Navigate, Outlet, useLocation } from "react-router";
-import { useAuth } from "context";
+import React, { useContext } from "react";
 import { ROUTES } from "constant";
-
-const NormaleRoute = () => {
-  const { user } = useAuth();
-  const location = useLocation();
-  if (user) {
-    return <Navigate to={ROUTES.HOME}  state={{ from: location }} replace />;
-  }
+import { useAuth } from "context";
+import { Navigate, Outlet } from "react-router";
 
 
-  return <Outlet />;
+
+
+
+const NormalRoutes: React.FC = () => {
+
+  const { user } = useAuth()
+
+  console.log(user, 'this is normale route user')
+
+  return !user?.email || user.firstName ? <Outlet /> : <Navigate to={ROUTES.HOME} />;
 };
 
-export default NormaleRoute
+export default NormalRoutes;

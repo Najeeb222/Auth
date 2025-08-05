@@ -8,16 +8,16 @@ import { FormProvider, useForm } from "react-hook-form";
 import { Link } from "react-router";
 
 const LoginForm = () => {
-    const { user, setUser } = useAuth();
-    const navigate = useNavigate();
+    const {  setUser } = useAuth();
+    // const navigate = useNavigate();
     const method = useForm();
 
 
-    useEffect(() => {
-        if (user) {
-            navigate(ROUTES.HOME);
-        }
-    }, [user, navigate]);
+    // useEffect(() => {
+    //     if (user) {
+    //         navigate(ROUTES.HOME);
+    //     }
+    // }, [user, navigate]);
 
     const submitData = (data: any) => {
         console.log(data);

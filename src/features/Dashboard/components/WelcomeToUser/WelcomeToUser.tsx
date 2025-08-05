@@ -1,15 +1,18 @@
-import { Box, Typography, Stack, Avatar } from "@mui/material";
+import { Logout } from "@mui/icons-material";
+import { Box, Typography, Stack, Avatar, Button } from "@mui/material";
 import { useAuth } from "context";
 
 const WelcomeToUser = () => {
-    const { user } = useAuth();
+    const { user, setUser } = useAuth(); // Make sure `logout` is available from your auth context
 
-    // Get first letter from name or email
     const firstLetter =
         user?.firstName?.[0]?.toUpperCase() ||
         user?.email?.[0]?.toUpperCase() ||
         "?";
 
+    const handleLogout = () => {
+        setUser(null)
+    }
     return (
         <Box
             display="flex"
@@ -37,6 +40,18 @@ const WelcomeToUser = () => {
                 <Typography variant="h6" fontWeight={500} color="text.secondary">
                     {user?.firstName || user?.email || "Guest"}
                 </Typography>
+
+
+                <Button
+
+                    variant="outlined"
+                    color="error"
+                    onClick={handleLogout}
+                    sx={{ mt: 2 }}
+                    endIcon={<Logout />}
+                >
+                    Logout
+                </Button>
             </Stack>
         </Box>
     );
