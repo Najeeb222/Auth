@@ -4,14 +4,14 @@ import { ROUTES } from 'constant';
 import { useAuth } from 'context';
 
 
- const SecureRoute = () => {
+const SecureRoute = () => {
   const { user } = useAuth();
   const location = useLocation();
 
-  if (!user?.email) {
+  if (!user?.id) {
     return <Navigate to={ROUTES.LOGIN} state={{ from: location }} replace />;
   }
 
   return <Outlet />;
 };
-export default  SecureRoute
+export default SecureRoute

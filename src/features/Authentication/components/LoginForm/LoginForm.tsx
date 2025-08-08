@@ -1,79 +1,115 @@
-import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import { Button, Checkbox, Divider, FormControlLabel, Stack, Typography } from "@mui/material";
 import { CustomTextField, PasswordField, SocialLogin } from "components";
 import { COLORS, ROUTES } from "constant";
-import { useAuth } from "context";
+import { useAuth, useToast } from "context";
 import { FormProvider, useForm } from "react-hook-form";
 import { Link } from "react-router";
+import { loginUser } from "libs";
+import { useState } from "react";
 
 const LoginForm = () => {
-    const {  setUser } = useAuth();
-    // const navigate = useNavigate();
-    const method = useForm();
+  const { login, user } = useAuth();
+  const { showToast } = useToast()
+  const navigate = useNavigate();
+  const methods = useForm();
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const submitData = async (data: any) => {
+    setIsLoading(true);
+    try {
+      const res = await loginUser(data);
+      console.log(res, 'Login Response');
+      console.log(user, 'User Info');
+      login(res.token);
+      navigate(ROUTES.HOME);
+      showToast("Account Login Successfully", 'success')
+    } catch (err) {
+
+      showToast("Invalid username or password. Please try again.", 'error')
+      console.log("Login error:", err);
+      showToast("Login error:", "error");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <Stack gap={"30px"} justifyContent={"center"} direction={"column"} height={"100%"} maxWidth={400} margin="0 auto">
+      <Stack gap={"20px"}>
+        <Typography variant="h4" sx={{ fontWeight: 600 }}>
+          Login
+        </Typography>
+        <Typography variant="body1" sx={{ color: COLORS.gray.light }}>
+          Access your Travelwise account
+        </Typography>
+      </Stack>
 
 
-    // useEffect(() => {
-    //     if (user) {
-    //         navigate(ROUTES.HOME);
-    //     }
-    // }, [user, navigate]);
 
-    const submitData = (data: any) => {
-        console.log(data);
-        setUser(data);
-    };
-
-    return (
-        <Stack gap={"30px"} justifyContent={"center"} direction={"column"} height={"100%"}>
+      <Stack gap={"20px"}>
+        <form onSubmit={methods.handleSubmit(submitData)}>
+          <FormProvider {...methods}>
             <Stack gap={"20px"}>
-                <Typography variant="h4" sx={{ fontWeight: 600 }}>
-                    Login
-                </Typography>
-                <Typography variant="caption" sx={{ fontSize: "13px", color: COLORS.gray.light }}>
-                    Login to access your travelwise account
-                </Typography>
-            </Stack>
-            <Stack gap={"20px"}>
-                <form onSubmit={method.handleSubmit(submitData)}>
-                    <FormProvider {...method}>
-                        <Stack gap={"20px"}>
-                            <CustomTextField name="email" placeholder="enter your email" type="email" label="Email" endAdornment />
-                            <PasswordField name="password" label="password" />
-                        </Stack>
+              <CustomTextField
+                name="username"
+                placeholder="Enter your username"
+                label="Username"
+                type="text"
+              />
+              <PasswordField
+                name="password"
+                label="Password"
 
-                        <Stack direction={"row"} sx={{ justifyContent: "space-between", alignItems: "center" }}>
-                            <FormControlLabel control={<Checkbox />} label="Remember me" sx={{ fontSize: "13px" }} />
-                            <Link to={ROUTES.FORGOT_PASSWORDS} style={{ color: COLORS.error.main, fontSize: "13px", textDecoration: "none" }}>
-                                Forgot Password
-                            </Link>
-                        </Stack>
-                        <Button
-                            type="submit"
-                            variant="contained"
-                            sx={{ textTransform: "capitalize", py: "10px", fontSize: "18px", width: "100%" }}
-                        >
-                            Login
-                        </Button>
-                    </FormProvider>
-                </form>
-                <Typography variant="body2" textAlign={"center"}>
-                    Don’t have an account?{" "}
-                    <Link to={ROUTES.SIGNUP} style={{ color: COLORS.error.main, textDecoration: "none", fontSize: "14px" }}>
-                        Sign up
-                    </Link>
-                </Typography>
-                <Stack direction={"row"} justifyContent={"space-between"} alignItems={"center"}>
-                    <Divider flexItem orientation="horizontal" sx={{ width: "37%", mb: "10px" }} />
-                    <Typography textAlign={"center"} color={COLORS.gray.main} sx={{ textWrap: "nowrap", pt: "2px" }}>
-                        Or login with
-                    </Typography>
-                    <Divider flexItem orientation="horizontal" sx={{ width: "37%", mb: "10px" }} />
-                </Stack>
+              />
             </Stack>
-            <SocialLogin />
+
+            <Stack direction={"row"} sx={{ justifyContent: "space-between", alignItems: "center", mt: 1 }}>
+              <FormControlLabel
+                control={<Checkbox />}
+                label="Remember me"
+                sx={{ fontSize: "13px" }}
+              />
+              <Link to={ROUTES.FORGOT_PASSWORDS} style={{ color: COLORS.error.main, fontSize: "13px", textDecoration: "none" }}>
+                Forgot Password?
+              </Link>
+            </Stack>
+
+            <Button
+              type="submit"
+              variant="contained"
+              disabled={isLoading}
+              sx={{
+                textTransform: "none",
+                py: "12px",
+                fontSize: "16px",
+                width: "100%",
+                mt: 2
+              }}
+            >
+              {isLoading ? "Logging in..." : "Login"}
+            </Button>
+          </FormProvider>
+        </form>
+
+        <Typography variant="body2" textAlign={"center"}>
+          Don't have an account?{" "}
+          <Link to={ROUTES.SIGNUP} style={{ color: COLORS.primary.main, textDecoration: "none" }}>
+            Sign up
+          </Link>
+        </Typography>
+
+        <Stack direction={"row"} alignItems={"center"} gap={2}>
+          <Divider flexItem sx={{ flexGrow: 1 }} />
+          <Typography color={COLORS.gray.main}>or continue with</Typography>
+          <Divider flexItem sx={{ flexGrow: 1 }} />
         </Stack>
-    );
+
+        <SocialLogin />
+      </Stack>
+    </Stack>
+  );
 };
 
 export default LoginForm;

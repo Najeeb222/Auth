@@ -8,11 +8,11 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
 
             <Grid container spacing={3} component={Paper} elevation={3} sx={{ p: 3, my: 'auto', borderRadius: '30px' }} >
 
-                <Grid size={{sm:7,xs:12}}>
+                <Grid size={{sm:7,xs:12}} order={{ xs: 2, sm: 1 }} >
 
                     {children}
                 </Grid>
-                <Grid size={{sm:5,xs:12}} >
+                <Grid size={{sm:5,xs:12}} order={{ xs: 1, sm: 2 }} >
 
                     <AuthSlider />
                 </Grid>

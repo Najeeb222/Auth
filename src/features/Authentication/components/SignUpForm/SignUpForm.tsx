@@ -1,112 +1,201 @@
-import { Button, Checkbox, Divider, FormControlLabel, Grid, Stack, Typography } from "@mui/material"
-import { CustomTextField, PasswordField, SocialLogin } from "components"
-import { COLORS, ROUTES } from "constant"
-import { useAuth } from "context"
-import { FormProvider, useForm } from "react-hook-form"
-import { Link } from "react-router"
+import { useState } from "react";
+import { Button, Divider, Grid, Stack, Typography } from "@mui/material";
+import { CustomTextField, PasswordField, SocialLogin } from "components";
+import { COLORS, ROUTES } from "constant";
+import { useAuth, useToast } from "context";
+import { signupUser } from "libs";
+import { FormProvider, useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router";
 
-
-const SignUpForm = () => {
-    const { setUser, user } = useAuth()
-    const method = useForm()
-    const submitData = (data: any) => {
-        if (data.password !== data.conformpassword) {
-            alert("Passwords do not match");
-            return;
-        }
-        console.log(data);
-        setUser(data);
-    }
-
-    console.log(user)
-    return (
-        <Stack gap={'30px'} justifyContent={'center'} direction={'column'} height={'100%'}>
-            <Stack gap={'20px'}>
-                <Typography variant="h4" sx={{ fontWeight: 600 }}>
-                    Sign up
-                </Typography>
-                <Typography variant="caption" sx={{ fontSize: '13px', color: COLORS.gray.light }}>
-                    Let’s get you all st up so you can access your personal account.
-                </Typography>
-            </Stack>
-            <Stack gap={'20px'}>
-                <form onSubmit={method.handleSubmit(submitData)} >
-                    <FormProvider {...method}>
-                        <Grid container spacing={2}>
-
-
-                            <Grid size={6}  >
-                                <CustomTextField name="firstName" placeholder="enter your first name" type="text" label="First Name" endAdornment />
-                            </Grid>
-                            <Grid size={6}  >
-                                <CustomTextField name="LastName" placeholder="enter your last name" type="text" label="Last Name" endAdornment />
-                            </Grid>
-
-                            <Grid size={6}  >
-                                <CustomTextField name="email" placeholder="enter your email" type="email" label="Email" endAdornment />
-                            </Grid>
-                            <Grid size={6}  >
-                                <CustomTextField name="phone" placeholder="enter your phone number" type="text" label="Phone" endAdornment />
-                            </Grid>
-                            <Grid size={12}>
-
-                                <PasswordField name="password" label="Password" placeholder="enter your password" />
-                            </Grid>
-                            <Grid size={12}>
-
-                                <PasswordField name="conformpassword" label="Confrom password" placeholder="conform password" />
-                            </Grid>
-                        </Grid>
-
-                        <Stack direction={'row'} sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-                            <FormControlLabel
-                                control={<Checkbox />}
-                                label={
-                                    <Typography variant="body2" sx={{ fontSize: '13px' }}>
-                                        Agree to all the{' '}
-                                        <span
-                                            style={{
-                                                color: COLORS.error.main
-                                            }}
-                                        >
-                                            Terms
-                                        </span>
-                                        {""}     and {""}
-                                        <span
-                                            style={{
-                                                color: COLORS.error.main,
-                                            }}
-                                        >
-                                            Privacy Policy
-                                        </span>
-                                    </Typography>
-                                }
-                            />
-
-                        </Stack>
-                        <Button type="submit" variant="contained" sx={{ textTransform: 'capitalize', py: '10px', fontSize: '18px', width: '100%' }}>
-                            Create account
-                        </Button>
-                    </FormProvider>
-                </form>
-                <Typography variant="body2" textAlign={'center'}>
-                    Already have an account? Login <Link to={ROUTES.LOGIN} style={{ color: COLORS.error.main, textDecoration: 'none', fontSize: '14px', }}>Login</Link>
-                </Typography>
-                <Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'}>
-                    <Divider flexItem orientation="horizontal" sx={{ width: '37%', mb: '10px' }} />
-                    <Typography textAlign={'center'} color={COLORS.gray.main} sx={{ textWrap: 'nowrap', pt: '2px' }}>
-                        Or login with
-                    </Typography>
-                    <Divider flexItem orientation="horizontal" sx={{ width: '37%', mb: '10px' }} />
-                </Stack>
-            </Stack>
-            <SocialLogin />
-
-
-        </Stack>
-    )
+interface SignUpFormData {
+  username: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
 }
 
+const SignUpForm = () => {
+  const { login } = useAuth();
+  const { showToast } = useToast();
+  const methods = useForm<SignUpFormData>();
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
+  const submitData = async (data: SignUpFormData) => {
+    // Client-side validation
+    if (data.password !== data.confirmPassword) {
+      showToast("Passwords do not match", "error");
+      return;
+    }
 
-export default SignUpForm
+    setIsLoading(true);
+    
+    try {
+      const payload = {
+        username: data.username,
+        email: data.email,
+        password: data.password,
+      };
+      
+      const res = await signupUser(payload);
+      
+      if (res.token) {
+        login(res.token);
+        showToast('Account created successfully!', 'success');
+        navigate(ROUTES.HOME); // Changed to dashboard
+      } else {
+        // Handle different error cases
+        const errorMessage = res.message || 'Sign up failed. Please try again.';
+        showToast(errorMessage, "error");
+      }
+    } catch (error: any) {
+      // Improved error handling
+      let errorMessage = "Sign up failed. Please try again.";
+      
+      if (error.response) {
+        // Server responded with error status
+        errorMessage = error.response.data?.message || 
+                        `Server error: ${error.response.status}`;
+      } else if (error.request) {
+        // Request was made but no response received
+        errorMessage = "No response from server. Please check your connection.";
+      }
+      
+      showToast(errorMessage, "error");
+      console.error("Signup error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <Stack 
+      gap={"30px"} 
+      justifyContent={"center"} 
+      direction={"column"} 
+      height={"100%"} 
+      maxWidth={500} 
+      margin="0 auto"
+      p={2}
+    >
+      <Stack gap={"20px"} textAlign="center">
+        <Typography variant="h4" sx={{ fontWeight: 600 }}>
+          Create Account
+        </Typography>
+        <Typography variant="body1" sx={{ color: COLORS.gray.light }}>
+          Let's get you set up to access your personal account
+        </Typography>
+      </Stack>
+      
+      <form onSubmit={methods.handleSubmit(submitData)}>
+        <FormProvider {...methods}>
+          <Grid container spacing={2}>
+            <Grid  size={12}>
+              <CustomTextField 
+                name="username" 
+                placeholder="Enter your username" 
+                type="text" 
+                label="Username"
+                
+                
+              />
+            </Grid>
+            
+            <Grid  size={12}>
+              <CustomTextField 
+                name="email" 
+                placeholder="Enter your email" 
+                type="email" 
+                label="Email"
+                
+                
+              />
+            </Grid>
+            
+            <Grid  size={{md:6,xs:12}}>
+              <PasswordField 
+                name="password" 
+                label="Password" 
+                placeholder="Create a password (min 6 characters)"
+                
+                
+              />
+            </Grid>
+            
+            <Grid  size={{md:6,xs:12}}>
+              <PasswordField 
+                name="confirmPassword" 
+                label="Confirm Password" 
+                placeholder="Re-enter your password"
+                
+                
+              />
+            </Grid>
+          </Grid>
+          
+          <Typography variant="body2" sx={{ mt: 2, textAlign: 'center' }}>
+            By creating an account, you agree to our{" "}
+            <Link 
+              to={ROUTES.SIGNUP} 
+              style={{ 
+                color: COLORS.primary.main,
+                textDecoration: 'underline',
+              }}
+            >
+              Terms
+            </Link>{" "}
+            and{" "}
+            <Link 
+              to={ROUTES.SIGNUP} 
+              style={{ 
+                color: COLORS.primary.main,
+                textDecoration: 'underline',
+              }}
+            >
+              Privacy Policy
+            </Link>
+          </Typography>
+          
+          <Button 
+            type="submit" 
+            variant="contained" 
+            disabled={isLoading}
+            fullWidth
+            sx={{ 
+              mt: 3, 
+              py: 2,
+              fontSize: '1rem',
+              fontWeight: 600
+            }}
+          >
+            {isLoading ? "Creating Account..." : "Create Account"}
+          </Button>
+        </FormProvider>
+      </form>
+      
+      <Typography variant="body2" textAlign={"center"}>
+        Already have an account?{" "}
+        <Link 
+          to={ROUTES.LOGIN} 
+          style={{ 
+            color: COLORS.primary.main, 
+            textDecoration: 'none',
+            fontWeight: 600
+          }}
+        >
+          Log in
+        </Link>
+      </Typography>
+      
+      <Stack direction={"row"} alignItems={"center"} gap={2} sx={{ my: 2 }}>
+        <Divider flexItem sx={{ flexGrow: 1 }} />
+        <Typography color={COLORS.gray.main}>or continue with</Typography>
+        <Divider flexItem sx={{ flexGrow: 1 }} />
+      </Stack>
+      
+      <SocialLogin />
+    </Stack>
+  );
+};
+
+export default SignUpForm;

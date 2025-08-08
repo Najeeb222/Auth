@@ -5,20 +5,20 @@ import { Route, Routes as ReactRoutes } from "react-router"
 import { ChangePassword, DashboardScreen, ForgotPassword, Login, SignUp } from "screens"
 
 const Routes = () => {
-    return (
-        <ReactRoutes>
-            <Route element={<SecureRoute />}>
-                <Route path={ROUTES.HOME} element={<DashboardScreen />} />
-            </Route>
+  return (
+    <ReactRoutes>
+      <Route element={<SecureRoute />}>
+        <Route path={ROUTES.HOME} element={<DashboardScreen />} />
+      </Route>
 
-            <Route element={<NormaleRoute />}>
-                <Route path={ROUTES.LOGIN} element={<Login />} />
-                <Route path={ROUTES.FORGOT_PASSWORDS} element={<ForgotPassword />} />
-                <Route path={ROUTES.SIGNUP} element={<SignUp />} />
-                <Route path={ROUTES.SET_PASSWORD} element={<ChangePassword />} />
-            </Route>
-        </ReactRoutes>
-    )
+      <Route element={<NormaleRoute />}>
+        <Route path={ROUTES.LOGIN} element={<Login />} />
+        <Route path={ROUTES.FORGOT_PASSWORDS} element={<ForgotPassword />} />
+        <Route path={ROUTES.SIGNUP} element={<SignUp />} />
+        <Route path={ROUTES.SET_PASSWORD} element={<ChangePassword />} />
+      </Route>
+    </ReactRoutes>
+  )
 }
 
 export default Routes

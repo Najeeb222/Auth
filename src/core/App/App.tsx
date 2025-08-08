@@ -1,12 +1,17 @@
-import { AuthProvider } from "context"
+import { AuthProvider, ToastProvider } from "context"
 import Routes from "core/Routes/Routes"
 
 
 
 const App = () => {
   return (
+
     <AuthProvider>
-      <Routes />
+      <ToastProvider>
+
+
+        <Routes />
+      </ToastProvider>
     </AuthProvider>
   )
 }

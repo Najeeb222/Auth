@@ -1,5 +1,48 @@
 # React + TypeScript + Vite
 
+
+
+
+
+# 🔐 React Auth App (Vite + TypeScript)
+
+A modern and responsive authentication system built using **React**, **TypeScript**, and **Vite**. It supports login, signup, forgot password, password reset, email verification, and global toast notifications using **Material UI**. The app uses **React Context** for authentication and toast state management.
+
+---
+
+ Features
+
+ User Registration  
+ User Login  
+ Forgot Password / Reset Password  
+ Email Verification  
+ Protected Routes (Private/Public)  
+ Global Toast Notifications  
+ Auth Persistence via `localStorage`  
+ Clean folder structure  
+ Responsive UI with Material UI  
+ Error handling with status codes (e.g., 400, 401, 500)
+
+---
+
+## 🛠️ Tech Stack
+
+- ⚛️ React
+- 🟦 TypeScript
+- ⚡ Vite
+- 🎨 Material UI (MUI v5)
+- 🔁 React Router v6+
+- 🧼 React Hook Form
+- 📡 Axios for API Requests
+- 📂 Context API (Auth + Toast)
+
+---
+
+
+
+
+
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:

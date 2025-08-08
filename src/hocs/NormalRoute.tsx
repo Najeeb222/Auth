@@ -11,9 +11,9 @@ const NormalRoutes: React.FC = () => {
 
   const { user } = useAuth()
 
-  console.log(user, 'this is normale route user')
+  console.log(user?.id, 'this is normale route user')
 
-  return !user?.email || user.firstName ? <Outlet /> : <Navigate to={ROUTES.HOME} />;
+  return !user?.id ? <Outlet /> : <Navigate to={ROUTES.HOME} />;
 };
 
 export default NormalRoutes;

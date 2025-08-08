@@ -1,58 +1,65 @@
 import { Logout } from "@mui/icons-material";
-import { Box, Typography, Stack, Avatar, Button } from "@mui/material";
+import {
+    Box,
+    Typography,
+
+    Button,
+    Card,
+    CardContent,
+    Stack
+} from "@mui/material";
 import { useAuth } from "context";
+import { useNavigate } from "react-router";
+import { ROUTES } from "constant";
 
 const WelcomeToUser = () => {
-    const { user, setUser } = useAuth(); // Make sure `logout` is available from your auth context
-
-    const firstLetter =
-        user?.firstName?.[0]?.toUpperCase() ||
-        user?.email?.[0]?.toUpperCase() ||
-        "?";
+    const { user, logout } = useAuth();
+    const navigate = useNavigate();
 
     const handleLogout = () => {
-        setUser(null)
-    }
+        logout();
+        navigate(ROUTES.LOGIN);
+    };
+
+    const formatTimestamp = (timestamp: number | undefined) => {
+        if (!timestamp) return "N/A";
+        return new Date(timestamp * 1000).toLocaleString();
+    };
+
     return (
         <Box
             display="flex"
             justifyContent="center"
             alignItems="center"
             minHeight="100vh"
-            bgcolor="#f5f7fa"
-            px={2}
+            bgcolor="#f0f0f0"
         >
-            <Stack spacing={2} textAlign="center" alignItems="center">
-                <Avatar
-                    sx={{
-                        bgcolor: "#1976d2",
-                        width: 80,
-                        height: 80,
-                        fontSize: 32,
-                        fontWeight: 600,
-                    }}
-                >
-                    {firstLetter}
-                </Avatar>
-                <Typography variant="h4" fontWeight={600} color="primary">
-                    Welcome 👋
-                </Typography>
-                <Typography variant="h6" fontWeight={500} color="text.secondary">
-                    {user?.firstName || user?.email || "Guest"}
-                </Typography>
+            <Card sx={{ width: 400, borderRadius: 2, boxShadow: 3 }}>
+                <CardContent>
 
 
-                <Button
+                    <Typography variant="h5" align="center" gutterBottom>
+                        Welcome
+                    </Typography>
 
-                    variant="outlined"
-                    color="error"
-                    onClick={handleLogout}
-                    sx={{ mt: 2 }}
-                    endIcon={<Logout />}
-                >
-                    Logout
-                </Button>
-            </Stack>
+                    <Stack spacing={1} sx={{ mt: 2 }}>
+                        <Typography><strong>User ID:</strong> {user?.id || "N/A"}</Typography>
+                        <Typography><strong>Account Created:</strong> {formatTimestamp(user?.iat)}</Typography>
+                        <Typography><strong>Token Expiry:</strong> {formatTimestamp(user?.exp)}</Typography>
+                    </Stack>
+
+                    <Button
+                        fullWidth
+                        variant="contained"
+                        color="secondary"
+                        onClick={handleLogout}
+                        sx={{ mt: 4 }}
+                        startIcon={<Logout />}
+                    >
+                        Logout
+                    </Button>
+                </CardContent>
+            </Card>
         </Box>
     );
 };
