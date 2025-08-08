@@ -39,13 +39,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = useCallback((newToken: string) => {
     localStorage.setItem("token", newToken);
     const decoded = jwtDecode<any>(newToken);
-    console.log(decoded, 'decoded in the auth context')
+
+
+    const userId = decoded.id || decoded.userId;
+    if (!userId) {
+      throw new Error("User ID not found in token");
+    }
+
     const userData: UserType = {
-      id: decoded.userId,
+      id: userId,  
       exp: decoded.exp,
-      iat: decoded.ia,
+      iat: decoded.iat,
     };
-    console.log(user, 'user in the auth context')
+
     setUser(userData);
     setToken(newToken);
   }, []);

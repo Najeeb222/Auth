@@ -1,12 +1,14 @@
-import { Logout } from "@mui/icons-material";
+import { Logout, Person, AccessTime, Schedule } from "@mui/icons-material";
 import {
+
     Box,
     Typography,
-
     Button,
     Card,
     CardContent,
-    Stack
+    Stack,
+    Divider,
+    useTheme
 } from "@mui/material";
 import { useAuth } from "context";
 import { useNavigate } from "react-router";
@@ -15,6 +17,7 @@ import { ROUTES } from "constant";
 const WelcomeToUser = () => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
+    const theme = useTheme();
 
     const handleLogout = () => {
         logout();
@@ -26,34 +29,60 @@ const WelcomeToUser = () => {
         return new Date(timestamp * 1000).toLocaleString();
     };
 
+  
+
     return (
         <Box
             display="flex"
             justifyContent="center"
             alignItems="center"
             minHeight="100vh"
-            bgcolor="#f0f0f0"
+            sx={{
+                background: "linear-gradient(to right, #8EC5FC, #E0C3FC)",
+                p: 2,
+            }}
         >
-            <Card sx={{ width: 400, borderRadius: 2, boxShadow: 3 }}>
+            <Card
+                sx={{
+                    width: 400,
+                    borderRadius: 4,
+                    boxShadow: 6,
+                    transition: "transform 0.3s ease",
+                    "&:hover": {
+                        transform: "scale(1.02)",
+                    },
+                }}
+            >
                 <CardContent>
+                
 
-
-                    <Typography variant="h5" align="center" gutterBottom>
-                        Welcome
+                    <Typography variant="h4" align="center" fontWeight={600} gutterBottom>
+                        Welcome, to your Dashboard!
                     </Typography>
 
-                    <Stack spacing={1} sx={{ mt: 2 }}>
-                        <Typography><strong>User ID:</strong> {user?.id || "N/A"}</Typography>
-                        <Typography><strong>Account Created:</strong> {formatTimestamp(user?.iat)}</Typography>
-                        <Typography><strong>Token Expiry:</strong> {formatTimestamp(user?.exp)}</Typography>
+                    <Divider sx={{ my: 2 }} />
+
+                    <Stack spacing={1}>
+                        <Typography variant="body1">
+                            <Person sx={{ verticalAlign: "middle", mr: 1 }} />
+                            <strong>User ID:</strong> {user?.id || "N/A"}
+                        </Typography>
+                        <Typography variant="body1">
+                            <AccessTime sx={{ verticalAlign: "middle", mr: 1 }} />
+                            <strong>Account Created:</strong> {formatTimestamp(user?.iat)}
+                        </Typography>
+                        <Typography variant="body1">
+                            <Schedule sx={{ verticalAlign: "middle", mr: 1 }} />
+                            <strong>Token Expiry:</strong> {formatTimestamp(user?.exp)}
+                        </Typography>
                     </Stack>
 
                     <Button
                         fullWidth
                         variant="contained"
-                        color="secondary"
+                        color="error"
                         onClick={handleLogout}
-                        sx={{ mt: 4 }}
+                        sx={{ mt: 4, py: 1.2, fontWeight: 600 }}
                         startIcon={<Logout />}
                     >
                         Logout
