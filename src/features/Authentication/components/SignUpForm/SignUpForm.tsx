@@ -1,10 +1,18 @@
 import { useState } from "react";
-import { Button, Divider, Grid, Stack, Typography } from "@mui/material";
+import {
+  Button,
+  Divider,
+  Grid,
+  Stack,
+  Typography,
+  Checkbox,
+  FormControlLabel
+} from "@mui/material";
 import { CustomTextField, PasswordField, SocialLogin } from "components";
 import { COLORS, ROUTES } from "constant";
-import { useAuth, useToast } from "context";
+import { useToast } from "context";
 import { signupUser } from "libs";
-import { FormProvider, useForm } from "react-hook-form";
+import { FormProvider, useForm, Controller } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
 
 interface SignUpFormData {
@@ -12,16 +20,25 @@ interface SignUpFormData {
   email: string;
   password: string;
   confirmPassword: string;
+  acceptTerms: boolean;
 }
 
 const SignUpForm = () => {
-
   const { showToast } = useToast();
-  const methods = useForm<SignUpFormData>();
+  const methods = useForm<SignUpFormData>({
+    defaultValues: {
+      acceptTerms: false
+    }
+  });
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
   const submitData = async (data: SignUpFormData) => {
+    if (!data.acceptTerms) {
+      showToast("You must agree to the terms before continuing.", "error");
+      return;
+    }
+
     setIsLoading(true);
     try {
       const payload = {
@@ -34,11 +51,10 @@ const SignUpForm = () => {
       console.log("API Response:", res.token);
 
       if (res) {
-
-        showToast('Account created successfully!', 'success');
+        showToast("Account created successfully!", "success");
         navigate(ROUTES.HOME);
       } else {
-        const errorMessage = res.message || 'Sign up failed. Please try again.';
+        const errorMessage = res.message || "Sign up failed. Please try again.";
         showToast(errorMessage, "error");
       }
     } catch (error: any) {
@@ -48,7 +64,6 @@ const SignUpForm = () => {
       setIsLoading(false);
     }
   };
-
 
   return (
     <Stack
@@ -78,8 +93,6 @@ const SignUpForm = () => {
                 placeholder="Enter your username"
                 type="text"
                 label="Username"
-
-
               />
             </Grid>
 
@@ -89,8 +102,6 @@ const SignUpForm = () => {
                 placeholder="Enter your email"
                 type="email"
                 label="Email"
-
-
               />
             </Grid>
 
@@ -99,38 +110,60 @@ const SignUpForm = () => {
                 name="password"
                 label="Password"
                 placeholder="Create a password (min 6 characters)"
-
-
               />
-            </Grid>
-
-            <Grid size={{ md: 6, xs: 12 }}>
-
             </Grid>
           </Grid>
 
-          <Typography variant="body2" sx={{ mt: 2, textAlign: 'center' }}>
-            By creating an account, you agree to our{" "}
-            <Link
-              to={ROUTES.SIGNUP}
-              style={{
-                color: COLORS.primary.main,
-                textDecoration: 'underline',
-              }}
-            >
-              Terms
-            </Link>{" "}
-            and{" "}
-            <Link
-              to={ROUTES.SIGNUP}
-              style={{
-                color: COLORS.primary.main,
-                textDecoration: 'underline',
-              }}
-            >
-              Privacy Policy
-            </Link>
-          </Typography>
+          {/* Terms Checkbox */}
+          <Controller
+            name="acceptTerms"
+            control={methods.control}
+            rules={{ required: "You must accept the terms" }}
+            render={({ field, fieldState }) => (
+              <>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      {...field}
+                      checked={field.value}
+                      size="small"
+                      sx={{ p: 0.5, mr: 1 }}
+                    />
+                  }
+                  label={
+                    <Typography variant="body2">
+                      By creating an account, you agree to our{" "}
+                      <Link
+                        to={ROUTES.SIGNUP}
+                        style={{
+                          color: COLORS.primary.main,
+                          textDecoration: "underline",
+                        }}
+                      >
+                        Terms
+                      </Link>{" "}
+                      and{" "}
+                      <Link
+                        to={ROUTES.SIGNUP}
+                        style={{
+                          color: COLORS.primary.main,
+                          textDecoration: "underline",
+                        }}
+                      >
+                        Privacy Policy
+                      </Link>
+                    </Typography>
+                  }
+                  sx={{ alignItems: "flex-start", mt: 2 }}
+                />
+                {fieldState.error && (
+                  <Typography variant="caption" color="error">
+                    {fieldState.error.message}
+                  </Typography>
+                )}
+              </>
+            )}
+          />
 
           <Button
             type="submit"
@@ -140,8 +173,8 @@ const SignUpForm = () => {
             sx={{
               mt: 3,
               py: 2,
-              fontSize: '1rem',
-              fontWeight: 600
+              fontSize: "1rem",
+              fontWeight: 600,
             }}
           >
             {isLoading ? "Creating Account..." : "Create Account"}
@@ -155,8 +188,8 @@ const SignUpForm = () => {
           to={ROUTES.LOGIN}
           style={{
             color: COLORS.primary.main,
-            textDecoration: 'none',
-            fontWeight: 600
+            textDecoration: "none",
+            fontWeight: 600,
           }}
         >
           Log in
