@@ -17,7 +17,7 @@ import { ROUTES } from "constant";
 const WelcomeToUser = () => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
-    const theme = useTheme();
+ 
 
     const handleLogout = () => {
         logout();

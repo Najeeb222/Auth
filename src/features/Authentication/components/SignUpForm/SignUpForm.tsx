@@ -15,7 +15,7 @@ interface SignUpFormData {
 }
 
 const SignUpForm = () => {
-  const { login } = useAuth();
+
   const { showToast } = useToast();
   const methods = useForm<SignUpFormData>();
   const navigate = useNavigate();
@@ -31,10 +31,10 @@ const SignUpForm = () => {
       };
 
       const res = await signupUser(payload);
-      console.log("API Response:", res.token);  
+      console.log("API Response:", res.token);
 
       if (res) {
-      
+
         showToast('Account created successfully!', 'success');
         navigate(ROUTES.HOME);
       } else {
@@ -94,7 +94,7 @@ const SignUpForm = () => {
               />
             </Grid>
 
-            <Grid size={{ md: 6, xs: 12 }}>
+            <Grid size={12}>
               <PasswordField
                 name="password"
                 label="Password"
