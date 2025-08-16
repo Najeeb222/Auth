@@ -40,12 +40,7 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
                         animate={{ x: 0, opacity: 1 }}
                         transition={{ duration: 0.5, delay: 0.2 }}
                           sx={{ height: '100%',
-                            display:'flex',
-                            width:'100%',
-                            alignItems:'center',
-                            justifyContent:'center',
-                            flexDirection:'column',
-                            bgcolor:'red'   
+                         
                            }} 
                     >
                         {children}
