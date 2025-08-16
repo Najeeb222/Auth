@@ -1,30 +1,27 @@
 import { Button, Divider, Stack, Typography } from "@mui/material"
 import { ArrowBack, CustomTextField, SocialLogin } from "components"
 import { COLORS, ROUTES } from "constant"
+import { useToast } from "context"
 import { PasswordOtp } from "libs"
 import { FormProvider, useForm } from "react-hook-form"
-import { Link } from "react-router"
+import { Link, useNavigate } from "react-router"
 
 const ForgotPasswordForm = () => {
   const method = useForm()
-  // const submitData = (data: any) => {
-  //   console.log(data)
-  // }
+  const naviget = useNavigate()
+  const { showToast } = useToast()
+
   const submitData = async (data: any) => {
     try {
-      const res = await PasswordOtp(data);
-      console.log("OTP Response:", res);
-      if (res.success) {
-        alert("OTP sent successfully. Please check your email.");
-      } else {
-        alert(res.message || "Failed to send OTP");
-      }
-    } catch (err) {
-      console.log("OTP Error:", err);
-      alert("Failed to send OTP. Check your email.");
+      await PasswordOtp(data);
+      naviget(ROUTES.SET_PASSWORD);
+      showToast('Otp send to your email', 'success')
+
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'An error occurred';
+      showToast(errorMessage, 'error')
+
     }
-
-
   };
   return (
     <Stack gap={'30px'} justifyContent={'center'} direction={'column'} height={'100%'}>
@@ -46,11 +43,11 @@ const ForgotPasswordForm = () => {
               <CustomTextField name="email" placeholder="enter your email" type="email" label="Email" endAdornment />
 
             </Stack>
-            <Link to={ROUTES.SET_PASSWORD} style={{ color: COLORS.error.main, fontSize: "13px", textDecoration: "none" }}>
+            {/* <Link to={ROUTES.SET_PASSWORD} style={{ color: COLORS.error.main, fontSize: "13px", textDecoration: "none" }}>
               Change Password
-            </Link>
+            </Link> */}
 
-            <Button type="submit" variant="contained" sx={{ textTransform: 'capitalize', py: '10px', fontSize: '18px',width: '100%',mt:2 }}>
+            <Button type="submit" variant="contained" sx={{ textTransform: 'capitalize', py: '10px', fontSize: '18px', width: '100%', mt: 2 }}>
               Submit
             </Button>
           </form>
