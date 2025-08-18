@@ -11,7 +11,7 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                height: "100vh",
+                height: { sm: '110vh' ,xs:'100%'},
             }}
         >
             <motion.div
@@ -40,7 +40,7 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
                         animate={{ x: 0, opacity: 1 }}
                         transition={{ duration: 0.5, delay: 0.2 }}
                           sx={{ height: '100%',
-                         
+                         mt: { xs: 2, sm: 0 },
                            }} 
                     >
                         {children}
@@ -54,8 +54,8 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
                         animate={{ x: 0, opacity: 1 }}
                         transition={{ duration: 0.5, delay: 0.3 }}
                         sx={{
-                            // mt:{sm:0,xs:'550px',},
-                            // mb:{sm:0,xs:'2px'},
+                         
+                        
                             height:'100%'}}
                     >
                         <AuthSlider />

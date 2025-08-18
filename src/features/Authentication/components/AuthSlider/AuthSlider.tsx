@@ -23,7 +23,7 @@ function SimpleSlider() {
   };
 
   return (
-    <Box className="slider-container" sx={{height:'100%'}}>
+    <Box className="slider-container" sx={{ height: '100%' }}>
       <Slider {...settings}>
         {sliderData.map((img, i) => (
           <Box
@@ -35,7 +35,7 @@ function SimpleSlider() {
               height: { md: '90vh', sm: '100vh', xs: '100vh' },
               objectFit: "cover",
               borderRadius: "10px",
-            
+
             }}
           />
         ))}

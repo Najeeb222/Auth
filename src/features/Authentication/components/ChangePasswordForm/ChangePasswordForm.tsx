@@ -1,4 +1,4 @@
-import { Button, Stack, Typography } from "@mui/material";
+import { Button, Stack, Typography, CircularProgress } from "@mui/material";
 import { ArrowBack, CustomTextField, PasswordField } from "components";
 import { COLORS, ROUTES } from "constant";
 import { useToast } from "context";
@@ -20,7 +20,7 @@ const ChangePasswordForm = () => {
       };
 
       const res = await ResetPassword(payload);
-      console.log("API Response:", res);
+   
 
       if (res) {
         showToast("Password changed successfully", "success");
@@ -74,9 +74,19 @@ const ChangePasswordForm = () => {
             fullWidth
             type="submit"
             variant="contained"
-            sx={{ textTransform: "capitalize", py: "10px", fontSize: "18px" }}
+            disabled={method.formState.isSubmitting} 
+            sx={{
+              textTransform: "capitalize",
+              py: "10px",
+              fontSize: "18px",
+              mt: 2,
+            }}
           >
-            Set Password
+            {method.formState.isSubmitting ? (
+              <CircularProgress size={24} color="inherit" />
+            ) : (
+              "Set Password"
+            )}
           </Button>
         </FormProvider>
       </form>
